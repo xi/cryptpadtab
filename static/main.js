@@ -14,7 +14,11 @@ var decode = function(string) {
 
 var textarea = document.querySelector('textarea');
 
-textarea.value = decode(location.hash.substr(1));
+try {
+	textarea.value = decode(location.hash.substr(1));
+} catch (e) {
+	console.exception(e);
+}
 
 textarea.addEventListener('input', event => {
 	history.replaceState(null, '', '#' + encode(textarea.value));
