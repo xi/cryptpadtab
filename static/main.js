@@ -1,26 +1,26 @@
 import * as base64 from './base64.js';
-import * as lzw from './lzw.js';
+import * as gzip from './gzip.js';
 
-var encode = function(text) {
+var encode = async function(text) {
 	var encoder = new TextEncoder();
 	var bytes = encoder.encode(text);
-	return base64.encode(lzw.compress(bytes));
+	return base64.encode(await gzip.compress(bytes));
 };
 
-var decode = function(string) {
+var decode = async function(string) {
 	var decoder = new TextDecoder();
-	var bytes = lzw.decompress(base64.decode(string));
+	var bytes = await gzip.decompress(base64.decode(string));
 	return decoder.decode(bytes);
 };
 
 var textarea = document.querySelector('textarea');
 
-try {
-	textarea.value = decode(location.hash.substr(1));
-} catch (e) {
-	console.exception(e);
-}
+decode(location.hash.substr(1)).then(text => {
+	textarea.value = text;
+});
 
 textarea.addEventListener('input', event => {
-	history.replaceState(null, '', '#' + encode(textarea.value));
+	encode(textarea.value).then(data => {
+		history.replaceState(null, '', `#${data}`);
+	});
 });
