@@ -1,15 +1,14 @@
 import * as base64 from './base64.js';
-import * as lzw from './lzw.js';
 
 var encode = function(text) {
 	var encoder = new TextEncoder();
 	var bytes = encoder.encode(text);
-	return base64.encode(lzw.compress(bytes));
+	return base64.encode(bytes);
 };
 
 var decode = function(string) {
 	var decoder = new TextDecoder();
-	var bytes = lzw.decompress(base64.decode(string));
+	var bytes = base64.decode(string);
 	return decoder.decode(bytes);
 };
 
