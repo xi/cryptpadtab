@@ -82,18 +82,22 @@ export async function decrypt(bytes, key) {
 	));
 }
 
-export async function encryptText(text, key) {
+export async function encodeText(text, key) {
 	var encoder = new TextEncoder();
 	var bytes = encoder.encode(text);
 	bytes = await compress(bytes);
-	bytes = await encrypt(bytes, key);
+	if (key) {
+		bytes = await encrypt(bytes, key);
+	}
 	return b64encode(bytes);
 }
 
-export async function decryptText(string, key) {
+export async function decodeText(string, key) {
 	var decoder = new TextDecoder();
 	var bytes = b64decode(string);
-	bytes = await decrypt(bytes, key);
+	if (key) {
+		bytes = await decrypt(bytes, key);
+	}
 	bytes = await decompress(bytes);
 	return decoder.decode(bytes);
 }
